@@ -6,6 +6,7 @@ While running locally:
 Trello Link :[trello](https://trello.com/b/yelGfTJ9/teaching-weekly-planning)
 
 # Getting Started
+Base URL: This application can be run locally on the http:/localhost:5000.
 ## Installing Dependencies
 
 ### Node js
@@ -52,8 +53,7 @@ npm run start
 ```
 To run the server on production mode.
 
-# Getting Started
-Base URL: This application can be run locally on the http:/localhost:5000.
+
 # Error Handling
 Errors are returned as JSON objects depend on the error.
 
@@ -66,27 +66,49 @@ The API will return two error types when requests fail:
 # API Reference
 HTTP Method   | authorize     |    Path                                |  Request Body
 ------------- | -----------   | ---------------------------            |----------------------
-POST          | everyone      |`/user/create`                          |{email, password, role}
-POST          | everyone      |`/user/log`                             |{email, password}
-GET           | admin only    |`/user/`                                |
-DELETE        | admin only    |`/user/`                                |
-GET           | everyone      |`/user/confirmation/:email/:token`      |
-PUT           | everyone      |`/user/forgetPassword`                  |{email}
-PUT           | everyone      |`/user/resetPassword`                   |{resetLink, newPassword}
-GET           | user+admin    |`/user/:_id”`                           |
-POST          | everyone      |`/user/googlelogin`                     |{idToken}
-PUT           | admin + user  |`/likes/`                               |{by, onPost}
-GET           | admin + user  |`/likes/:onPost`                        |
-POST          | admin + user  |`/comment/create`                       |{title, by, onPost}
-PUT           | admin + user  |`/comment/update`                       |{id, title}
-DELETE        | admin + user  |`/comment/delete/:_id`                  |
-GET           | admin + user  |`/posts/`                               |
-GET           | admin + user  |`/posts/userPost/:postedBy`             |
-GET           | admin + user  |`/posts/onePost/:_id`                   |
-POST          | admin + user  |`/posts/create`                         |{img, describe, postedBy}
-PUT           | admin + user  |`/posts/archivePost/:_id`               |{id}
-DELETE        | admin + user  |`/posts/delete/:_id`                    |
-PUT           | admin + user  |`/posts/update`                         |{id, newdescribe}
+get          | admin      |`/allchallenge`                          |{idToken.roleToken}
+POST          | guest      |`/register`                             |{firstName,lastName,email,userName,phone,password}
+post           | guest    |`/signin`                                |{name,password}
+get        | guest    |`/confirmEmail/:email/:rand`                    |
+GET           | guest      |`/resendLink`      |
+post           | user      |`/forgit`                  |{email}
+PUT           | user      |`/changepass`                   |{email,rand password}
+GET           | user    |`/leaderbord`                           |{idToken}
+GET          | user      |`/user/:id`                     |{idToken}
+DELETE           | admin + user  |`/account`                               |{idToken.roleToken}
+POST           | admin + user  |`/likes/:onPost`                        |
+POST          |  user  |`/interst`                       |{interest}{idToken}
+PUT           |  user  |`/favoritLang`                       |{expertise}{idToken}
+PUT        |  user  |`/personalWeb`                  |{website}{idToken}
+PUT           |  user  |`/stackflow`                               |{stackflow}{idToken}
+PUT           |  user  |`/github`             |{github}{idToken}
+PUT          |  user  |`/email`                   |{email}{idToken}
+PUT          |  user  |`/phone`                         |{phone}{idToken}
+PUT           |  user  |`/personalInfo`               |{parthDate,country,city,nationality,sex,imployeeState}{idToken}
+PUT        |  user  |`/accountInfo`                    |{image,firstName,lastName,userName}{idToken}
+POST           |  user  |`/favoritLang`                         |{lang,expertise}{idToken}
+delete           |  user  |`/favoritLang`                         |{lang}{idToken}
+post           |  user  |`/education`                         |{level,college,speciall,enrollment,graduation}{idToken}
+DELETE           |  user  |`/education`                         |{level}{idToken}
+post           |  user  |`/traning`                         |{center,certificate,begining,end}{idToken}
+DELETE           |  user  |`/training`                         |{certificate}{idToken}
+DELETE           |  user  |`/interest`                         |{interest}{idToken}
+GET           |  user  |`/challenges/:userId`                         |{idToken}
+GET           |  user  |`/oneChallenge/:id`                         |{idToken}
+POST           |  user poin>500,admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}
+GET           |  admin  |`/allChallenges`                         |
+PUT           |  admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}
+DELETE           |  admin  |`/challenge/:id`                         |
+PUT           |  admin  |`/confirmChallenge/:id`                         |
+GET           |  user  |`/challengelevel/:level`                         |{idToken}
+GET           |  user  |`/userSolution/:userId`                         |{idToken}
+GET           |  user  |`/solution/:challId`                         |{idToken}
+POST           |  user   |`/solution`                         |{solution,chall,lang,level}{idToken}
+POST           |  user   |`/comment`                         |{image,username,date,disc,challengeId,userId}{idToken}
+GET           |  user  |`/comment/challId`                         |{idToken}
+DELETE           |  user+admin  |`/comment/:Id`                     |{idToken.roleToken}
+DELETE           |  user+admin  |`/account/:userId`                     |{idToken.roleToken}
+
 
 
 
