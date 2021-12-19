@@ -71,50 +71,49 @@ The API will return two error types when requests fail:
 * 404: Not Found
 
 # API Reference
-HTTP Method   | authorize     |    Path                                |  Request Body
-------------- | -----------   | ---------------------------            |----------------------
-get          | admin      |`/allchallenge`                          |{idToken.roleToken}
-POST          | guest      |`/register`                             |{firstName,lastName,email,userName,phone,password}
-post           | guest    |`/signin`                                |{name,password}
-get        | guest    |`/confirmEmail/:email/:rand`                    |
-GET           | guest      |`/resendLink`      |
-post           | user      |`/forgit`                  |{email}
-PUT           | user      |`/changepass`                   |{email,rand password}
-GET           | user    |`/leaderbord`                           |{idToken}
-GET          | user      |`/user/:id`                     |{idToken}
-DELETE           | admin + user  |`/account`                               |{idToken.roleToken}
-POST           | admin + user  |`/likes/:onPost`                        |
-POST          |  user  |`/interst`                       |{interest}{idToken}
-PUT           |  user  |`/favoritLang`                       |{expertise}{idToken}
-PUT        |  user  |`/personalWeb`                  |{website}{idToken}
-PUT           |  user  |`/stackflow`                               |{stackflow}{idToken}
-PUT           |  user  |`/github`             |{github}{idToken}
-PUT          |  user  |`/email`                   |{email}{idToken}
-PUT          |  user  |`/phone`                         |{phone}{idToken}
-PUT           |  user  |`/personalInfo`               |{parthDate,country,city,nationality,sex,imployeeState}{idToken}
-PUT        |  user  |`/accountInfo`                    |{image,firstName,lastName,userName}{idToken}
-POST           |  user  |`/favoritLang`                         |{lang,expertise}{idToken}
-delete           |  user  |`/favoritLang`                         |{lang}{idToken}
-post           |  user  |`/education`                         |{level,college,speciall,enrollment,graduation}{idToken}
-DELETE           |  user  |`/education`                         |{level}{idToken}
-post           |  user  |`/traning`                         |{center,certificate,begining,end}{idToken}
-DELETE           |  user  |`/training`                         |{certificate}{idToken}
-DELETE           |  user  |`/interest`                         |{interest}{idToken}
-GET           |  user  |`/challenges/:userId`                         |{idToken}
-GET           |  user  |`/oneChallenge/:id`                         |{idToken}
-POST           |  user poin>500,admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}
-GET           |  admin  |`/allChallenges`                         |
-PUT           |  admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}
-DELETE           |  admin  |`/challenge/:id`                         |
-PUT           |  admin  |`/confirmChallenge/:id`                         |
-GET           |  user  |`/challengelevel/:level`                         |{idToken}
-GET           |  user  |`/userSolution/:userId`                         |{idToken}
-GET           |  user  |`/solution/:challId`                         |{idToken}
-POST           |  user   |`/solution`                         |{solution,chall,lang,level}{idToken}
-POST           |  user   |`/comment`                         |{image,username,date,disc,challengeId,userId}{idToken}
-GET           |  user  |`/comment/challId`                         |{idToken}
-DELETE           |  user+admin  |`/comment/:Id`                     |{idToken.roleToken}
-DELETE           |  user+admin  |`/account/:userId`                     |{idToken.roleToken}
+HTTP Method   | authorize     |    Path                                |  Request Body                     |  Success status         |  Error status
+------------- | -----------   | ---------------------------            |----------------------             |-----------------------  |------------------
+get          | admin      |`/allchallenge`                          |{idToken.roleToken}                   |   data(200)   | (400)(404)
+POST          | guest      |`/register`                             |{firstName,lastName,email,userName,phone,password}|  data(200)  | (400)
+post           | guest    |`/signin`                                |{name,password} |data(200)  |(400)(404)
+get        | guest    |`/confirmEmail/:email/:rand`                    |              |data(200)  |(400)(404)
+GET           | guest      |`/resendLink`      |                      | data(200)  |(400)(404)
+post           | user      |`/forgit`                  |{email}  |data(200)  |(400)(404)
+PUT           | user      |`/changepass`                   |{email,rand password} | data(200)  |(400)(404)
+GET           | user    |`/leaderbord`                           |{idToken}  |data(200)  |(400)(404)
+GET          | user      |`/user/:id`                     |{idToken}   |data(200)  |(400)(404)
+DELETE           | admin + user  |`/account`                               |{idToken.roleToken}  |data(200)  |(400)(404)
+POST          |  user  |`/interst`                       |{interest}{idToken}|data(200)  |(400)
+PUT           |  user  |`/favoritLang`                       |{expertise}{idToken}|data(200)  |(400)(404)
+PUT        |  user  |`/personalWeb`                  |{website}{idToken}|data(200)  |(400)(404)
+PUT           |  user  |`/stackflow`                               |{stackflow}{idToken}|data(200)  |(400)(404)
+PUT           |  user  |`/github`             |{github}{idToken}|data(200)  |(400)(404)
+PUT          |  user  |`/email`                   |{email}{idToken}|data(200)  |(400)(404)
+PUT          |  user  |`/phone`                         |{phone}{idToken}|data(200)  |(400)(404)
+PUT           |  user  |`/personalInfo`               |{parthDate,country,city,nationality,sex,imployeeState}{idToken}|data(200)  |(400)(404)
+PUT        |  user  |`/accountInfo`                    |{image,firstName,lastName,userName}{idToken}|data(200)  |(400)(404)
+POST           |  user  |`/favoritLang`                         |{lang,expertise}{idToken}|data(200)  |(400)(404)
+delete           |  user  |`/favoritLang`                         |{lang}{idToken}|data(200)  |(400)(404)
+post           |  user  |`/education`                         |{level,college,speciall,enrollment,graduation}{idToken}|data(200)  |(400)(404)
+DELETE           |  user  |`/education`                         |{level}{idToken}|data(200)  |(400)(404)
+post           |  user  |`/traning`                         |{center,certificate,begining,end}{idToken}|data(200)  |(400)(404)
+DELETE           |  user  |`/training`                         |{certificate}{idToken}|data(200)  |(400)(404)
+DELETE           |  user  |`/interest`                         |{interest}{idToken}|data(200)  |(400)(404)
+GET           |  user  |`/challenges/:userId`                         |{idToken}|data(200)  |(400)(404)
+GET           |  user  |`/oneChallenge/:id`                         |{idToken}|data(200)  |(400)(404)
+POST           |  user poin>500,admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}|data(200)  |(400)(404)
+GET           |  admin  |`/allChallenges`                         |      |data(200)  |(400)(404)
+PUT           |  admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}|data(200)  |(400)(404)
+DELETE           |  admin  |`/challenge/:id`                         |     |data(200)  |(400)(404)
+PUT           |  admin  |`/confirmChallenge/:id`                         |    |data(200)  |(400)(404)
+GET           |  user  |`/challengelevel/:level`                         |{idToken}|data(200)  |(400)(404)
+GET           |  user  |`/userSolution/:userId`                         |{idToken}|data(200)  |(400)(404)
+GET           |  user  |`/solution/:challId`                         |{idToken}|data(200)  |(400)(404)
+POST           |  user   |`/solution`                         |{solution,chall,lang,level}{idToken}|data(200)  |(400)(404)
+POST           |  user   |`/comment`                         |{image,username,date,disc,challengeId,userId}|data(200)  |(400)(404){idToken}
+GET           |  user  |`/comment/challId`                         |{idToken}|data(200)  |(400)(404)
+DELETE           |  user+admin  |`/comment/:Id`                     |{idToken.roleToken}|data(200)  |(400)(404)
+DELETE           |  user+admin  |`/account/:userId`                     |{idToken.roleToken}|data(200)  |(400)(404)
 
 # Models
 - user model
