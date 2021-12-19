@@ -92,10 +92,10 @@ PUT           | admin + user  |`/posts/update`                         |{id, new
 
 # Entity Relationship Diagram
 
-![Untitled%20Diagram-db.drawio img](https://github.com/Nouf112233/masterproject-backend/blob/main/Untitled%20Diagram-db.drawio.png)
+![daigrame-Backend img](https://github.com/MP-Project-Nouf/server/blob/main/daigrame-Backend.png)
 
 
 # UML
 
-![uml-backend img](https://github.com/Nouf112233/masterproject-backend/blob/main/uml-backend.png)
+![uml-Backend%20(1) img](https://github.com/MP-Project-Nouf/server/blob/main/uml-Backend%20(1).png)
 
