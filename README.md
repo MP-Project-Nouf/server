@@ -119,6 +119,11 @@ GET           |  user  |`/comment/challId`                         |{idToken}|da
 DELETE           |  user+admin  |`/comment/:Id`                     |{idToken.roleToken}|data(200)  |(400)(404)
 DELETE           |  user+admin  |`/account/:userId`                     |{idToken.roleToken}|data(200)  |(400)(404)
 
+# UML
+
+![uml-Backend%20(1) img](https://github.com/MP-Project-Nouf/server/blob/main/uml-Backend%20(1).png)
+
+
 # Models
 - user model
 
@@ -205,7 +210,4 @@ DELETE           |  user+admin  |`/account/:userId`                     |{idToke
 ![daigrame-Backend img](https://github.com/MP-Project-Nouf/server/blob/main/daigrame-Backend.png)
 
 
-# UML
-
-![uml-Backend%20(1) img](https://github.com/MP-Project-Nouf/server/blob/main/uml-Backend%20(1).png)
 
