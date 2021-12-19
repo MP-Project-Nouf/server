@@ -3,6 +3,7 @@ This is a site where those interested in programming can select the programming 
 
 Heroku Link:
 While running locally:
+Trello Link :[trello](https://trello.com/b/yelGfTJ9/teaching-weekly-planning)
 
 # Getting Started
 ## Installing Dependencies
@@ -87,17 +88,6 @@ PUT           | admin + user  |`/posts/archivePost/:_id`               |{id}
 DELETE        | admin + user  |`/posts/delete/:_id`                    |
 PUT           | admin + user  |`/posts/update`                         |{id, newdescribe}
 
-# components
-* home
-* profile
-* challenges
-* challenge
-* comments
-* solutions
-* signin
-* register
-* forgit
-* users
 
 
 # Entity Relationship Diagram
