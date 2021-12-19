@@ -1,9 +1,16 @@
 # Coding challenge
 This is a site where those interested in programming can select the programming language they are interested in, make programming challenges and get points.
 
+# Heroku:
 Heroku Link:
 While running locally:
+
+# Trello:
 Trello Link :[trello](https://trello.com/b/yelGfTJ9/teaching-weekly-planning)
+
+# slides
+presentation slides Link :[prezi](https://prezi.com/p/edit/4wyaz0nyy0v7/)
+
 
 # Getting Started
 Base URL: This application can be run locally on the http:/localhost:5000.
@@ -108,6 +115,83 @@ POST           |  user   |`/comment`                         |{image,username,da
 GET           |  user  |`/comment/challId`                         |{idToken}
 DELETE           |  user+admin  |`/comment/:Id`                     |{idToken.roleToken}
 DELETE           |  user+admin  |`/account/:userId`                     |{idToken.roleToken}
+
+# Models
+- user model
+
+| key        | type            | options          | default value |
+| ---------- | --------------- | ---------------- | ------------- |
+| image      | String          |                  | n/a           |
+| firstName  | String          | required         | n/a           |
+| lastName   | String          | required         | n/a           |
+| userName   | String          | required  uniq   | n/a           |
+| email      | String          | required  uniq   | n/a           |
+| password   | String          | required         | n/a           |
+| pirth      |date             |                  | n/a           |
+| country    | String          |                  | n/a           |
+| city       | String          |                  | n/a           |
+|natinalality| String          |                  | n/a           |
+| sex        | String          |                  | n/a           |
+| status     | String          |                  | n/a           |
+| roles      | Schema <roles>  | required         | n/a           |
+| githup     | string          |                  | n/a           |
+| stack      | string          |                  | n/a           |
+| website    | string          |                  | n/a           |
+| twitter    | string          |                  | n/a           |
+| linkedin   | String          |                  | n/a           |
+| favLang    | Array           |                  | n/a           |
+| education  | Array           |                  | n/a           |
+| training   | Array           |                  | n/a           |
+| interest   | Array           |                  | n/a           |
+| isdeleted  | Boolean         |                  | false         |
+| isactive   | Boolean         |                  | false         |
+| totalpoint | Number          |                  | 10            |
+| level      | Number          |                  | n/a           |
+
+- roles model
+
+| key  | type   | options          | default value |
+| ---- | ------ | ---------------- | ------------- |
+| role | String | required, unique | n/a           |
+
+- comments model
+
+| key         | type            | options  | default value |
+| ----------- | --------------- | -------- | ------------- |
+| username    | string          | required | n/a           |
+| image       | string          |          | n/a           |
+| user        | Schema <user>   | required | n/a           |
+| desc        | String          | required | n/a           |
+| challenge   |Schema<challeng> | required | n/a           |
+| date        | Date            | required | new date      |
+
+- solution model
+
+| key         | type            | options  | default value |
+| ----------- | --------------- | -------- | ------------- |
+| soulution   | string          | required | n/a           |
+| lang        | string          |          | n/a           |
+| user        | Schema <user>   | required | n/a           |
+| kind        | String          | required | n/a           |
+| challenge   |Schema<challeng> | required | n/a           |
+| date        | Date            | required | new date      |
+
+- challenge model
+
+| key         | type            | options  | default value |
+| ----------- | --------------- | -------- | ------------- |
+| kind        | string          | required | n/a           |
+| title       | string          |          | n/a           |
+| user        | Schema <user>   | required | n/a           |
+| disc        | String          | required | n/a           |
+| point       | Number          | required | n/a           |
+| level       | Number          | required | n/a           |
+| input       | Array           | required | n/a           |
+| output      | Array           | required | n/a           |
+| active      | Boolean         | required | false         |
+
+
+
 
 
 
