@@ -152,7 +152,8 @@ DELETE           |  user+admin  |`/account/:userId`                     |{idToke
 
 | key  | type   | options          | default value |
 | ---- | ------ | ---------------- | ------------- |
-| role | String | required, unique | n/a           |
+| role | String | required | n/a           |
+| permision | Array | required | n/a           |
 
 - comments model
 
