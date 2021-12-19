@@ -1,5 +1,9 @@
 # Coding challenge
 This is a site where those interested in programming can select the programming language they are interested in, make programming challenges and get points.
+## repo server 
+server Link :[server](https://github.com/MP-Project-Nouf/server)
+## repo client 
+client Link :[client](https://github.com/MP-Project-Nouf/client)
 
 # Heroku:
 Heroku Link:
@@ -92,16 +96,16 @@ PUT          |  user  |`/email`                   |{email}{idToken}|data(200)  |
 PUT          |  user  |`/phone`                         |{phone}{idToken}|data(200)  |(400)(404)
 PUT           |  user  |`/personalInfo`               |{parthDate,country,city,nationality,sex,imployeeState}{idToken}|data(200)  |(400)(404)
 PUT        |  user  |`/accountInfo`                    |{image,firstName,lastName,userName}{idToken}|data(200)  |(400)(404)
-POST           |  user  |`/favoritLang`                         |{lang,expertise}{idToken}|data(200)  |(400)(404)
+POST           |  user  |`/favoritLang`                         |{lang,expertise}{idToken}|data(200)  |(400)
 delete           |  user  |`/favoritLang`                         |{lang}{idToken}|data(200)  |(400)(404)
-post           |  user  |`/education`                         |{level,college,speciall,enrollment,graduation}{idToken}|data(200)  |(400)(404)
+post           |  user  |`/education`                         |{level,college,speciall,enrollment,graduation}{idToken}|data(200)  |(400)
 DELETE           |  user  |`/education`                         |{level}{idToken}|data(200)  |(400)(404)
-post           |  user  |`/traning`                         |{center,certificate,begining,end}{idToken}|data(200)  |(400)(404)
+post           |  user  |`/traning`                         |{center,certificate,begining,end}{idToken}|data(200)  |(400)
 DELETE           |  user  |`/training`                         |{certificate}{idToken}|data(200)  |(400)(404)
 DELETE           |  user  |`/interest`                         |{interest}{idToken}|data(200)  |(400)(404)
 GET           |  user  |`/challenges/:userId`                         |{idToken}|data(200)  |(400)(404)
 GET           |  user  |`/oneChallenge/:id`                         |{idToken}|data(200)  |(400)(404)
-POST           |  user poin>500,admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}|data(200)  |(400)(404)
+POST           |  user poin>500,admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}|data(200)  |(400)
 GET           |  admin  |`/allChallenges`                         |      |data(200)  |(400)(404)
 PUT           |  admin  |`/challenge`                         |{kind,title,disc,point,input,output}{idToken}|data(200)  |(400)(404)
 DELETE           |  admin  |`/challenge/:id`                         |     |data(200)  |(400)(404)
@@ -109,8 +113,8 @@ PUT           |  admin  |`/confirmChallenge/:id`                         |    |d
 GET           |  user  |`/challengelevel/:level`                         |{idToken}|data(200)  |(400)(404)
 GET           |  user  |`/userSolution/:userId`                         |{idToken}|data(200)  |(400)(404)
 GET           |  user  |`/solution/:challId`                         |{idToken}|data(200)  |(400)(404)
-POST           |  user   |`/solution`                         |{solution,chall,lang,level}{idToken}|data(200)  |(400)(404)
-POST           |  user   |`/comment`                         |{image,username,date,disc,challengeId,userId}|data(200)  |(400)(404){idToken}
+POST           |  user   |`/solution`                         |{solution,chall,lang,level}{idToken}|data(200)  |(400)
+POST           |  user   |`/comment`                         |{image,username,date,disc,challengeId,userId}{idToken}|data(200)  |(400)
 GET           |  user  |`/comment/challId`                         |{idToken}|data(200)  |(400)(404)
 DELETE           |  user+admin  |`/comment/:Id`                     |{idToken.roleToken}|data(200)  |(400)(404)
 DELETE           |  user+admin  |`/account/:userId`                     |{idToken.roleToken}|data(200)  |(400)(404)
