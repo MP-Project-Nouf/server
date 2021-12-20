@@ -17,6 +17,12 @@ app.use("/role", roleRouter);
 const userRouter = require("./routers/routes/user");
 app.use(userRouter);
 
+const favoritLangRouter = require("./routers/routes/favoritLang");
+app.use(favoritLangRouter);
+
+const educationRouter = require("./routers/routes/education");
+app.use(educationRouter);
+
 
 
 

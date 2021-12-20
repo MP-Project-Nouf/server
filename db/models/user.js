@@ -25,7 +25,10 @@ const user = new mongoose.Schema({
   isDel:{type: Boolean , default:false},
   isActive:{type: Boolean ,default:false},
   point:{type: Number ,default:10},
-  level:{type: Number ,default:1}
+  level:{type: Number ,default:1},
+  favLan:[{type: mongoose.Schema.Types.ObjectId, ref: "FavoritLang"}],
+  training:[{type: mongoose.Schema.Types.ObjectId, ref: "Training"}],
+  education:[{type: mongoose.Schema.Types.ObjectId, ref: "Education"}]
 
 });
 
