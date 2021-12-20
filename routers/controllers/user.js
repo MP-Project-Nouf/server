@@ -195,6 +195,20 @@ const register = async (req, res) => {
 };
 //end forgitpass function
 
+//start changpass function
+const changepass=async (req,res)=>{
+  const {email,rand,password}=req.body;
+  const savedPassword = await bcrypt.hash(password, SALT);
+  userModel.findOneAndUpdate({$and:[{email},{rand}]},{password:savedPassword},{new:true})
+  .then((result)=>{
+    res.status(200).json(result)
+  })
+  .catch((err)=>{
+    res.status(400).json(err)
+  });
+};
+//end changepass function
+
   //start getAllUsers function
   const getAllUser=(req, res) => {
     userModel
@@ -274,4 +288,4 @@ const register = async (req, res) => {
   
 
 
-  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass };
+  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass };
