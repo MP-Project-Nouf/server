@@ -283,9 +283,155 @@ const changepass=async (req,res)=>{
   }
   //end addInterest function
 
-  
+  //start deleteinterest function
+  const deleteinterest=(req,res)=>{
+    const {interest}=req.body;
+    const userId=req.token.id;
+    userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      { $pull: { interest } } ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end deleteinterest function
+
+//start website function
+const website=(req,res)=>{
+  const {website}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {website} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end website function
+
+//start github function
+const github=(req,res)=>{
+  const {github}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {github} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end github function
+
+//start stackflow function
+const stackflow=(req,res)=>{
+  const {stackflow}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {stackflow} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end stackflow function
+//start twitter function
+const twitter=(req,res)=>{
+  const {twitter}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {twitter} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end twitter function
+
+//start linkedin function
+const linkedin=(req,res)=>{
+  const {linkedin}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {linkedin} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end linkedin function
+
+//start editPesonalInfo function
+const editPesonalInfo=(req,res)=>{
+  const {birth,country,city,nationality,gender,workStatus}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {birth,country,city,nationality,gender,workStatus} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end editPesonalInfo function
 
   
 
+  
 
-  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass };
+
+  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,website,github,stackflow,twitter,linkedin,editPesonalInfo };

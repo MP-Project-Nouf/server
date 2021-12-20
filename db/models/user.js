@@ -10,7 +10,7 @@ const user = new mongoose.Schema({
   phone:{type:Number , required:true},
   avatar:{type:String},
   rand:{type:Number},
-  pirth:{type: Date},
+  birth:{type: Date},
   country:{type: String},
   city:{type: String},
   nationality:{type: String},
