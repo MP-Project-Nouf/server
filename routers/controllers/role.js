@@ -15,4 +15,4 @@ const addRole = (req, res) => {
       });
   };
 
-module.exports =  addRole ;
+  module.exports = { addRole };

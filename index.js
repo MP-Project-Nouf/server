@@ -11,8 +11,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// const roleRouter = require("./routers/routes/role");
-// app.use("/role", roleRouter);
+const roleRouter = require("./routers/routes/role");
+app.use("/role", roleRouter);
 
 
 
