@@ -8,10 +8,11 @@ const nodemailer = require("nodemailer");
 // const passport = require('passport');
 
 // const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+//start register function
 const register = async (req, res) => {
-    const { email, username, password, role, avatar } = req.body;
+    const { firstname,lastname,email,username,phone,password,role } = req.body;
     if (
       /\d/.test(password) &&
       /[A-Z]/.test(password) &&
@@ -22,15 +23,17 @@ const register = async (req, res) => {
       const savedEmail = email.toLowerCase();
       const savedName = username.toLowerCase();
       const savedPassword = await bcrypt.hash(password, SALT);
-      rand = Math.floor(Math.random() * 100 + 54);
+      rand = Math.floor(Math.random() * 2222 + 54);
   
       const newUser = new userModel({
         email: savedEmail,
         username: savedName,
         password: savedPassword,
         role,
-        avatar,
+        firstname,
+        lastname,
         rand,
+        phone
       });
       newUser
         .save()
@@ -80,5 +83,109 @@ const register = async (req, res) => {
       res.status(400).json({ msg: "your password not complex" });
     }
   };
+  //end register function
 
-  module.exports = { register };
+  //start login function
+  const login = (req, res) => {
+    const { name, password } = req.body;
+  
+    const savedname = name.toLowerCase();
+  
+    userModel
+      .findOne({ $or: [{ email: savedname }, { username: savedname }] })
+      .then(async (result) => {
+        if (result) {
+          if (result.isActive === false) {
+            res.status(401).json({
+              msg: "Your Email has not been verified. Please click on resend",
+            });
+          } else {
+            const hashedPass = await bcrypt.compare(password, result.password);
+            if (hashedPass) {
+              const payload = {
+                role: result.role,
+                id: result._id,
+              };
+              const options = { expiresIn: "300m" };
+              const token = await jwt.sign(payload, secret, options);
+              res.status(200).json({ result, token });
+            } else {
+              res.status(400).json("invalid email or password");
+            }
+          }
+        } else {
+          res.status(404).json("user does not exit");
+        }
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  };
+  //end login function
+
+  //start confirm email function
+  const confirmEmail = (req, res) => {
+    const { email } = req.params;
+  
+    try {
+      userModel
+        .findOneAndUpdate(
+          { email: email },
+          { isActive: true },
+          {
+            new: true,
+          }
+        )
+        .then((result) => {
+          console.log("result", result);
+          res.status(200).send("Your account has been successfully verified");
+        })
+        .catch((err) => {
+          console.log("err", err);
+          res.status(404).json("user not found");
+        });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  };
+  //end confirm email function
+
+  //start getAllUsers function
+  const getAllUser=(req, res) => {
+    userModel
+      .find({})
+      .then((result) => {
+          if(result){
+        res.status(200).json(result);
+          }else{
+            res.status(404).json("not found any user"); 
+          }
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  };
+  //end  getAllUsers function
+
+  //start getUserById function
+  const getUserById=(req,res)=>{
+      const {id}=req.params;
+    userModel
+    .findOne({_id:id})
+    .then((result) => {
+        if(result){
+      res.status(200).json(result);
+        }else{
+          res.status(404).json("not found any user"); 
+        }
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+  //end getUserById function
+
+  
+
+
+  module.exports = { register,confirmEmail,login,getAllUser,getUserById };
