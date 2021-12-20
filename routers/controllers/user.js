@@ -185,7 +185,86 @@ const register = async (req, res) => {
 };
   //end getUserById function
 
+  //start deleteUserbyId function
+  const deleteUserbyId = (req, res) => {
+    const { id } = req.params;
+    userModel
+      .findByIdAndUpdate({_id:id}, { isDel: true })
+      .then(() => {
+        res.status(200).json({ message: "User has been deleted successfully" });
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  };
+  //end deleteUserbyId function
   
+  //start addInterest function
+  const addInerest=(req,res)=>{
+      const {interest}=req.body;
+      const userId=req.token.id;
+      userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { $push: { interest:[...interest] } } ,
+        {
+          new: true,
+        }
+      ).then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  //end addInterest function
+
+  //start addfavoritLang function
+  const addfavoritLang=(req,res)=>{
+      const {faveLang}=req.body;
+      const userId=req.token.id;
+      userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { $push: { faveLang } } ,
+        {
+          new: true,
+        }
+      ).then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
 
 
-  module.exports = { register,confirmEmail,login,getAllUser,getUserById };
+  }
+  //end addfavoritLang function
+
+  //start editfavoritLang function
+  const editfavoritLang=(req,res)=>{
+    const {faveLang}=req.body;
+    const userId=req.token.id;
+    userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      { $push: { faveLang } } ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+
+
+}
+  //end editfavoritLang function
+
+
+  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,addfavoritLang };
