@@ -1,5 +1,5 @@
 const express = require("express");
-const { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,website,github,stackflow,twitter,linkedin,editPesonalInfo } = require("./../controllers/user");
+const { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,website,github,stackflow,twitter,linkedin,editPesonalInfo,editAccountInfo } = require("./../controllers/user");
 const userRouter = express.Router();
 const authontication=require("./../middelware/authontication");
 const Authorization=require("./../middelware/authorization");
@@ -21,6 +21,7 @@ userRouter.put("/stackflow",authontication,stackflow);
 userRouter.put("/twitter",authontication,twitter);
 userRouter.put("/linkedin",authontication,linkedin);
 userRouter.put("/pesonalInfo",authontication,editPesonalInfo);
+userRouter.put("/accountInfo",authontication,editAccountInfo);
 
 
 

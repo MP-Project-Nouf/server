@@ -429,9 +429,30 @@ const editPesonalInfo=(req,res)=>{
 }
 //end editPesonalInfo function
 
-  
+//start editAccountInfo function
+const editAccountInfo=(req,res)=>{
+  const {avatar,firstname,lastname,username,email,phone}=req.body;
+  const userId=req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      {avatar,firstname,lastname,username,email,phone} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+}
+//end editAccountInfo function
 
   
 
+  
 
-  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,website,github,stackflow,twitter,linkedin,editPesonalInfo };
+
+  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,website,github,stackflow,twitter,linkedin,editPesonalInfo,editAccountInfo };
