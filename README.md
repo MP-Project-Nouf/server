@@ -94,7 +94,7 @@ PUT           |  user  |`/stackflow`                               |{stackflow}{
 PUT           |  user  |`/github`             |{github}{idToken}|data(200)  |(400)(404)
 PUT          |  user  |`/email`                   |{email}{idToken}|data(200)  |(400)(404)
 PUT          |  user  |`/phone`                         |{phone}{idToken}|data(200)  |(400)(404)
-PUT           |  user  |`/personalInfo`               |{parthDate,country,city,nationality,sex,imployeeState}{idToken}|data(200)  |(400)(404)
+PUT           |  user  |`/personalInfo`               |{parthDate,country,city,nationality,gender,imployeeState}{idToken}|data(200)  |(400)(404)
 PUT        |  user  |`/accountInfo`                    |{image,firstName,lastName,userName}{idToken}|data(200)  |(400)(404)
 POST           |  user  |`/favoritLang`                         |{lang,expertise}{idToken}|data(200)  |(400)
 delete           |  user  |`/favoritLang`                         |{lang}{idToken}|data(200)  |(400)(404)
