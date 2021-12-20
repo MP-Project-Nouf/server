@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const training = new mongoose.Schema({
-    Center:{type:String, required: true},
+    center:{type:String, required: true},
     certificate:{type:String , required: true},
     begining:{type:String, required: true},
     end:{type:Date , required: true},

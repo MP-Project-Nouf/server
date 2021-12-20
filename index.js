@@ -24,10 +24,8 @@ const educationRouter = require("./routers/routes/education");
 app.use(educationRouter);
 
 
-
-
-
-
+const trainingRouter = require("./routers/routes/training");
+app.use(trainingRouter);
 
 
 const PORT = process.env.PORT || 5000;
