@@ -4,7 +4,9 @@
   "description": "This is a site where those interested in programming can select the programming language they are interested in, make programming challenges and get points.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
     
   },
   "repository": {
