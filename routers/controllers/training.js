@@ -26,19 +26,19 @@ const addtraining=(req,res)=>{
 //end addfavoritLang function
 
 //start deleteeducation function
-const deleteeducation=(req,res)=>{
+const deleteTraining=(req,res)=>{
     const {id}=req.params;
-    educationModel
+    trainingModel
     .findByIdAndDelete({_id:id})
     .then(()=>{
-        res.status(200).json("education deleted succsesfull");
+        res.status(200).json("training deleted succsesfull");
     })
     .catch((err) => {
         console.log("err", err);
-        res.status(404).json("education found");
+        res.status(404).json("training not found");
       });
 }
 //end deleteeducation function
 
 
-module.exports = {addtraining };
+module.exports = {addtraining,deleteTraining };

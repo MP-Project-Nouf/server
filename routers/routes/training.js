@@ -1,10 +1,11 @@
 const express = require("express");
-const { addtraining } = require("./../controllers/training");
+const { addtraining,deleteTraining } = require("./../controllers/training");
 const trainingRouter = express.Router();
 const authontication=require("./../middelware/authontication");
 const Authorization=require("./../middelware/authorization");
 
-trainingRouter.put("/training",authontication,addtraining);
+trainingRouter.post("/training",authontication,addtraining);
+trainingRouter.delete("/training/:id",authontication,deleteTraining);
 
 
 

@@ -150,6 +150,51 @@ const register = async (req, res) => {
   };
   //end confirm email function
 
+  //start forgitpass function
+  const forgitpass = (req, res) => {
+  const { email } = req.body;
+
+  userModel
+    .findOne({ email: email })
+    .then((result) => {
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.USER,
+          pass: process.env.PASS,
+        },
+      });
+      const mailOptions = {
+        from: "nouf.ateeq@gmail.com",
+        to: result.email,
+        subject: "Account Verification Link",
+        text:
+          "Hello " +
+          result.name +
+          ",\n\n" +
+          "Please copy this code to change your password: \n" +
+          result.rand +
+          "\n\nThank You!\n",
+      };
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          return res.status(500).send({
+            msg: "Technical Issue!, Please click on resend for change.",
+          });
+        }
+        return res.status(200).send("code has been sent to " + result.email);
+      });
+    })
+
+    .catch((err) => {
+      console.log("err", err);
+      res.status(400).send({
+        msg: "We were unable to find a user with that email. Make sure your Email is correct!",
+      });
+    });
+};
+//end forgitpass function
+
   //start getAllUsers function
   const getAllUser=(req, res) => {
     userModel
@@ -226,5 +271,7 @@ const register = async (req, res) => {
 
   
 
+  
 
-  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest };
+
+  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass };
