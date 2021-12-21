@@ -87,6 +87,7 @@ const register = async (req, res) => {
 
   //start login function
   const login = (req, res) => {
+    console.log("hello");
     const { name, password } = req.body;
   
     const savedname = name.toLowerCase();
@@ -231,11 +232,13 @@ const changepass=async (req,res)=>{
       const {id}=req.params;
     userModel
     .findOne({_id:id})
-    .populate("favLan education training")
+    .populate("favLan")
+    .populate("education")
+    .populate("training")
     .exec()
     .then((result) => {
         if(result){
-          console.log("result",result);
+         
       res.status(200).json(result);
         }else{
           res.status(404).json("not found any user"); 
