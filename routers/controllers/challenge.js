@@ -78,5 +78,25 @@ const getChallengeByUser=(req,res)=>{
 };
 //end getChallengeByUser function
 
+//start getChallById function
+const getChallById=(req,res)=>{
+    const {id}=req.params;
+    challengeModel
+  .findOne({_id:id})
+  .then((result) => {
+      if(result){
+       
+    res.status(200).json(result);
+      }else{
+        res.status(404).json("challenge not found"); 
+      }
+  })
+  .catch((err) => {
+    console.log("err",err);
+    res.status(400).json(err);
+  });
+  };
+  //end getChallById function
 
-module.exports = {addChall,getAllChall,getChallengeByUser};
+
+module.exports = {addChall,getAllChall,getChallengeByUser,getChallById};
