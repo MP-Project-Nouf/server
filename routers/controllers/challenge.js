@@ -63,7 +63,7 @@ const getAllChall=(req, res) => {
 const getChallengeByUser=(req,res)=>{
   const {user}=req.params;
   challengeModel
-.find({user})
+.find( { $and: [ { user }, {active:true }] })
 .then((result) => {
     if(result){
      
@@ -103,7 +103,7 @@ const getChallById=(req,res)=>{
 const getChallbylevel=(req,res)=>{
     const {level}=req.params;
     challengeModel
-  .findOne({level})
+  .findOne({$and: [ { level }, {active:true }] })
   .then((result) => {
       if(result){
        
@@ -140,5 +140,25 @@ const editChall=(req,res)=>{
   }
   //end editChall function
 
+  //start confChall function
+const confChall=(req,res)=>{
+    const {point,level,active,_id}=req.body;
+    challengeModel
+      .findOneAndUpdate(
+        { _id},
+        {point,level,active,_id} ,
+        {
+          new: true,
+        }
+      ).then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("challenge not found");
+      });
+  }
+  //end confChall function
 
-module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel,editChall};
+
+module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel,editChall,confChall};
