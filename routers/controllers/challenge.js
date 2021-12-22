@@ -2,7 +2,7 @@ const challengeModel = require("./../../db/models/challenge");
 
 //start addChall function
 const addChall=(req,res)=>{
-    const {disc,title,point,level,input,output}=req.body;
+    const {disc,title,point,level,input,output,active}=req.body;
     const userId=req.token.id;
     const newChallengeModel = new challengeModel({
         disc,
@@ -11,6 +11,7 @@ const addChall=(req,res)=>{
         level,
         input,
         output,
+        active,
         user:userId
        
       });
@@ -118,5 +119,26 @@ const getChallbylevel=(req,res)=>{
   };
   //end getChallbylevel function
 
+  //start editChall function
+const editChall=(req,res)=>{
+    const {disc,title,point,level,input,output,active,_id}=req.body;
+    // const userId=req.token.id;
+    challengeModel
+      .findOneAndUpdate(
+        { _id},
+        {disc,title,point,level,input,output,active,_id} ,
+        {
+          new: true,
+        }
+      ).then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("challenge not found");
+      });
+  }
+  //end editChall function
 
-module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel};
+
+module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel,editChall};
