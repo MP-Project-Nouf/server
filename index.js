@@ -33,6 +33,9 @@ app.use(solutionRouter);
 const challengeRouter = require("./routers/routes/challenge");
 app.use(challengeRouter);
 
+const commentRouter = require("./routers/routes/comment");
+app.use(commentRouter);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

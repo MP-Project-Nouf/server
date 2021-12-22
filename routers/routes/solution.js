@@ -5,8 +5,8 @@ const authontication=require("./../middelware/authontication");
 const Authorization=require("./../middelware/authorization");
 
 solutionRouter.post("/solution",authontication,addsolution);
-// solutionRouter.delete("/education/:id",authontication,deleteeducation);
 solutionRouter.get("/solution/:chall",authontication,getSoulByChall);
+solutionRouter.get("/sol/:user",authontication,getSoulByChall);
 
 
 
