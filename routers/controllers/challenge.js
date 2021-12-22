@@ -98,5 +98,25 @@ const getChallById=(req,res)=>{
   };
   //end getChallById function
 
+  //start getChallbylevel function
+const getChallbylevel=(req,res)=>{
+    const {level}=req.params;
+    challengeModel
+  .findOne({level})
+  .then((result) => {
+      if(result){
+       
+    res.status(200).json(result);
+      }else{
+        res.status(404).json("challenge not found"); 
+      }
+  })
+  .catch((err) => {
+    console.log("err",err);
+    res.status(400).json(err);
+  });
+  };
+  //end getChallbylevel function
 
-module.exports = {addChall,getAllChall,getChallengeByUser,getChallById};
+
+module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel};
