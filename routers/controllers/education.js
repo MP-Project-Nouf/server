@@ -40,5 +40,25 @@ const deleteeducation=(req,res)=>{
 }
 //end deleteeducation function
 
+//start geteducationByuser function
+const geteducationByuser=(req,res)=>{
+  const {user}=req.params;
+  educationModel
+.find({user})
+.then((result) => {
+    if(result){
+     
+  res.status(200).json(result);
+    }else{
+      res.status(404).json("not found any traing"); 
+    }
+})
+.catch((err) => {
+  console.log("err",err);
+  res.status(400).json(err);
+});
+};
+//end geteducationByuser function
 
-module.exports = {addeducation,deleteeducation };
+
+module.exports = {addeducation,deleteeducation,geteducationByuser };

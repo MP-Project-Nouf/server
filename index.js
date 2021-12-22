@@ -27,6 +27,12 @@ app.use(educationRouter);
 const trainingRouter = require("./routers/routes/training");
 app.use(trainingRouter);
 
+const solutionRouter = require("./routers/routes/solution");
+app.use(solutionRouter);
+
+const challengeRouter = require("./routers/routes/challenge");
+app.use(challengeRouter);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -1,7 +1,7 @@
 const trainingModel = require("./../../db/models/training");
 const userModel = require("./../../db/models/user");
 
-//start addeducation function
+//start addtraining function
 const addtraining=(req,res)=>{
     const {center,certificate,begining,end}=req.body;
     const userId=req.token.id;
@@ -26,9 +26,9 @@ const addtraining=(req,res)=>{
             res.status(400).json(err);
     });
 }
-//end addfavoritLang function
+//end addtraining function
 
-//start deleteeducation function
+//start deletetraining function
 const deleteTraining=(req,res)=>{
     const {id}=req.params;
     trainingModel
@@ -41,7 +41,27 @@ const deleteTraining=(req,res)=>{
         res.status(404).json("training not found");
       });
 }
-//end deleteeducation function
+//end deletetraining function
+
+ //start gettrainingByuser function
+ const gettrainingByuser=(req,res)=>{
+  const {user}=req.params;
+  trainingModel
+.find({user})
+.then((result) => {
+    if(result){
+     
+  res.status(200).json(result);
+    }else{
+      res.status(404).json("not found any traing"); 
+    }
+})
+.catch((err) => {
+  console.log("err",err);
+  res.status(400).json(err);
+});
+};
+//end gettrainingByuser function
 
 
-module.exports = {addtraining,deleteTraining };
+module.exports = {addtraining,deleteTraining,gettrainingByuser };

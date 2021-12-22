@@ -66,4 +66,24 @@ const deletefavoritLang = (req, res) => {
 };
 //end deletefavoritLang function
 
-module.exports = { addfavoritLang, editfavoritLang, deletefavoritLang };
+//start getfavLanByuser function
+const getfavLanByuser=(req,res)=>{
+  const {user}=req.params;
+  favortLnagModel
+.find({user})
+.then((result) => {
+    if(result){
+     
+  res.status(200).json(result);
+    }else{
+      res.status(404).json("not found any traing"); 
+    }
+})
+.catch((err) => {
+  console.log("err",err);
+  res.status(400).json(err);
+});
+};
+//end getfavLanByuser function
+
+module.exports = { addfavoritLang, editfavoritLang, deletefavoritLang,getfavLanByuser };
