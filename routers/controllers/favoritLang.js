@@ -61,7 +61,7 @@ const deletefavoritLang = (req, res) => {
     })
     .catch((err) => {
       console.log("err", err);
-      res.status(404).json("user not found");
+      res.status(404).json("favorit languge not found");
     });
 };
 //end deletefavoritLang function

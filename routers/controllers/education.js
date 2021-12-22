@@ -35,7 +35,7 @@ const deleteeducation=(req,res)=>{
     })
     .catch((err) => {
         console.log("err", err);
-        res.status(404).json("education found");
+        res.status(404).json("education not found");
       });
 }
 //end deleteeducation function

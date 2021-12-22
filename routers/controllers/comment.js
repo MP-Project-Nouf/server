@@ -23,24 +23,20 @@ const addComment = (req, res) => {
 };
 //end addComment function
 
-//start getSoulByuser function
-// const getSoulByuser = (req, res) => {
-//     const { user } = req.params;
-//     solutionModel
-//       .find({ user })
-//       .then((result) => {
-//         if (result) {
-//           res.status(200).json(result);
-//         } else {
-//           res.status(404).json("not found any solution");
-//         }
-//       })
-//       .catch((err) => {
-//         console.log("err", err);
-//         res.status(400).json(err);
-//       });
-//   };
-  //end getSoulByuser function
+//start delComment function
+const delComment=(req,res)=>{
+    const {id}=req.params;
+    commentModel
+    .findByIdAndDelete({_id:id})
+    .then(()=>{
+        res.status(200).json("comment deleted succsesfull");
+    })
+    .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("comment not found");
+      });
+}
+//end delComment function
 
 //start getcommentByChall function
 const getcommentByChall = (req, res) => {
@@ -61,4 +57,4 @@ const getcommentByChall = (req, res) => {
 };
 //end getcommentByChall function
 
-module.exports = { addComment,getcommentByChall };
+module.exports = { addComment,getcommentByChall,delComment };
