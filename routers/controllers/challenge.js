@@ -25,6 +25,23 @@ const addChall=(req,res)=>{
 }
 //end addChall function
 
+//start getAllChall function
+const getAllChall=(req, res) => {
+    challengeModel
+      .find({})
+      .then((result) => {
+          if(result){
+        res.status(200).json(result);
+          }else{
+            res.status(404).json("not found any challenge"); 
+          }
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  };
+  //end  getAllChall function
+
 
 //start deleteeducation function
 // const deleteeducation=(req,res)=>{
@@ -62,4 +79,4 @@ const addChall=(req,res)=>{
 //end geteducationByuser function
 
 
-module.exports = {addChall};
+module.exports = {addChall,getAllChall};
