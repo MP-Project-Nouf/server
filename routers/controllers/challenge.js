@@ -44,20 +44,20 @@ const getAllChall=(req, res) => {
   //end  getAllChall function
 
 
-//start deleteeducation function
-// const deleteeducation=(req,res)=>{
-//     const {id}=req.params;
-//     educationModel
-//     .findByIdAndDelete({_id:id})
-//     .then(()=>{
-//         res.status(200).json("education deleted succsesfull");
-//     })
-//     .catch((err) => {
-//         console.log("err", err);
-//         res.status(404).json("education found");
-//       });
-// }
-//end deleteeducation function
+//start deleteChall function
+const deleteChall=(req,res)=>{
+    const {id}=req.params;
+    challengeModel
+    .findByIdAndDelete({_id:id})
+    .then(()=>{
+        res.status(200).json("challenge deleted succsesfull");
+    })
+    .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("challenge not found");
+      });
+}
+//end deleteChall function
 
 //start getChallengeByUser function
 const getChallengeByUser=(req,res)=>{
@@ -161,4 +161,4 @@ const confChall=(req,res)=>{
   //end confChall function
 
 
-module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel,editChall,confChall};
+module.exports = {addChall,getAllChall,getChallengeByUser,getChallById,getChallbylevel,editChall,confChall,deleteChall};
