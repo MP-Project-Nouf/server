@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const solution = new mongoose.Schema({
+    point:{type:Number},
+    title:{type:String},
     image:{type:String},
     username:{type:String,required: true},
     solve:{type:String, required: true},

@@ -214,6 +214,7 @@ const changepass=async (req,res)=>{
   const getAllUser=(req, res) => {
     userModel
       .find({})
+      .sort({ point :-1})
       .then((result) => {
           if(result){
         res.status(200).json(result);
