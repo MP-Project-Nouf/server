@@ -1,12 +1,12 @@
 const express = require("express");
-const {addsolution,getSoulByChall } = require("./../controllers/solution");
+const {addsolution,getSoulByChall,getSoulByuser } = require("./../controllers/solution");
 const solutionRouter = express.Router();
 const authontication=require("./../middelware/authontication");
 const Authorization=require("./../middelware/authorization");
 
 solutionRouter.post("/solution",authontication,addsolution);
 solutionRouter.get("/solution/:chall",authontication,getSoulByChall);
-solutionRouter.get("/sol/:user",authontication,getSoulByChall);
+solutionRouter.get("/sol/:user",authontication,getSoulByuser);
 
 
 

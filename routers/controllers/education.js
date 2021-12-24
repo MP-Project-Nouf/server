@@ -22,7 +22,7 @@ const addeducation=(req,res)=>{
             res.status(400).json(err);
     });
 }
-//end addfavoritLang function
+//end addeducation function
 
 
 //start deleteeducation function
