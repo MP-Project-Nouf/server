@@ -1,5 +1,5 @@
 const express = require("express");
-const { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,comunication,editPesonalInfo,editAccountInfo } = require("./../controllers/user");
+const { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,comunication,editPesonalInfo,editAccountInfo,searchUser } = require("./../controllers/user");
 const userRouter = express.Router();
 const authontication=require("./../middelware/authontication");
 const Authorization=require("./../middelware/authorization");
@@ -18,6 +18,7 @@ userRouter.post("/changepass",changepass);
 userRouter.put("/comunication",authontication,comunication);
 userRouter.put("/pesonalInfo",authontication,editPesonalInfo);
 userRouter.put("/accountInfo",authontication,editAccountInfo);
+userRouter.get("/search/:name",searchUser);
 
 
 

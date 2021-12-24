@@ -648,6 +648,21 @@ const editAccountInfo = (req, res) => {
 };
 //end editAccountInfo function
 
+
+//start search function
+const searchUser = (req, res) => {
+  const {name}=req.params;
+  userModel
+    .find({$or:[{ username:{$regex: new RegExp(name)}},{ password:{$regex: new RegExp(name)}}]},
+    {
+      _id:0,
+      _v:0
+    },function (err,data){
+      res.json(data);
+    })
+};
+// end serach function
+
 module.exports = {
   register,
   confirmEmail,
@@ -662,4 +677,5 @@ module.exports = {
   comunication,
   editPesonalInfo,
   editAccountInfo,
+  searchUser
 };
