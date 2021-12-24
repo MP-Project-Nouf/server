@@ -122,21 +122,24 @@ const getChallbylevel=(req,res)=>{
   //start editChall function
 const editChall=(req,res)=>{
     const {disc,title,point,level,input,output,active,_id}=req.body;
-    // const userId=req.token.id;
+   if(disc)
+   {
     challengeModel
-      .findOneAndUpdate(
-        { _id},
-        {disc,title,point,level,input,output,active,_id} ,
-        {
-          new: true,
-        }
-      ).then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => {
-        console.log("err", err);
-        res.status(404).json("challenge not found");
-      });
+    .findOneAndUpdate(
+      { _id},
+      {disc} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+    
   }
   //end editChall function
 

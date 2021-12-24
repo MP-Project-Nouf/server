@@ -11,15 +11,13 @@ const addtraining=(req,res)=>{
         begining,
         end,
         user:userId
-       
       });
       newTrainingModel
         .save()
         .then((result) => {
           console.log("train",result._id)
           userModel
-          .findByIdAndUpdate({_id:userId},{ $push: { training:result._id } })
-            
+          .findByIdAndUpdate({_id:userId},{ $push: { training:result._id } })   
         res.status(200).json(result);
     })
     .catch((err) => {

@@ -12,90 +12,90 @@ const nodemailer = require("nodemailer");
 
 //start register function
 const register = async (req, res) => {
-    const { firstname,lastname,email,username,phone,password,role } = req.body;
-    if (
-      /\d/.test(password) &&
-      /[A-Z]/.test(password) &&
-      /[a-z]/.test(password) &&
-      /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password) &&
-      password.length > 6
-    ) {
-      const savedEmail = email.toLowerCase();
-      const savedName = username.toLowerCase();
-      const savedPassword = await bcrypt.hash(password, SALT);
-      rand = Math.floor(Math.random() * 2222 + 54);
-  
-      const newUser = new userModel({
-        email: savedEmail,
-        username: savedName,
-        password: savedPassword,
-        role,
-        firstname,
-        lastname,
-        rand,
-        phone
-      });
-      newUser
-        .save()
-        .then((result) => {
-          // console.log("HOST",HOST);
-          const transporter = nodemailer.createTransport({
-            service: "Gmail",
-            auth: { user: process.env.USER, pass: process.env.PASS },
-          });
-          const mailOptions = {
-            from: "nouf.ateeq@gmail.com",
-            to: result.email,
-            subject: "Account Verification Link",
-            text:
-              "Hello " +
-              result.username +
-              ",\n\n" +
-              "Please verify your account by clicking the link: \nhttp://" +
-              req.headers.host +
-              "/confirmation/" +
-              result.email +
-              "/" +
-              rand +
-              "\n\nThank You!\n",
-          };
-          transporter.sendMail(mailOptions, function (err) {
-            if (err) {
-              res.status(500).send({
-                msg: "Technical Issue!, Please click on resend for verify your Email.",
-              });
-            }
-            res
-              .status(200)
-              .send(
-                "A verification email has been sent to " +
-                  result.email +
-                  ". It will be expire after one day. If you not get verification Email click on resend link."
-              );
-          });
-  
-          // res.status(201).json(result);
-        })
-        .catch((err) => {
-          res.status(400).json(err);
-        });
-    } else {
-      res.status(400).json({ msg: "your password not complex" });
-    }
-  };
-  //end register function
+  const { firstname, lastname, email, username, phone, password, role } =
+    req.body;
+  if (
+    /\d/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password) &&
+    password.length > 6
+  ) {
+    const savedEmail = email.toLowerCase();
+    const savedName = username.toLowerCase();
+    const savedPassword = await bcrypt.hash(password, SALT);
+    rand = Math.floor(Math.random() * 2222 + 54);
 
-  //start login function
-  const login = (req, res) => {
-    console.log("hello");
-    const { name, password } = req.body;
-  
-    const savedname = name.toLowerCase();
-  
-    userModel
-      .findOne({ $or: [{ email: savedname }, { username: savedname }] })
-      .then(async (result) => {
-        if (result) {
+    const newUser = new userModel({
+      email: savedEmail,
+      username: savedName,
+      password: savedPassword,
+      role,
+      firstname,
+      lastname,
+      rand,
+      phone,
+    });
+    newUser
+      .save()
+      .then((result) => {
+        // console.log("HOST",HOST);
+        const transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: { user: process.env.USER, pass: process.env.PASS },
+        });
+        const mailOptions = {
+          from: "nouf.ateeq@gmail.com",
+          to: result.email,
+          subject: "Account Verification Link",
+          text:
+            "Hello " +
+            result.username +
+            ",\n\n" +
+            "Please verify your account by clicking the link: \nhttp://" +
+            req.headers.host +
+            "/confirmation/" +
+            result.email +
+            "/" +
+            rand +
+            "\n\nThank You!\n",
+        };
+        transporter.sendMail(mailOptions, function (err) {
+          if (err) {
+            res.status(500).send({
+              msg: "Technical Issue!, Please click on resend for verify your Email.",
+            });
+          }
+          res
+            .status(200)
+            .send(
+              "A verification email has been sent to " +
+                result.email +
+                ". It will be expire after one day. If you not get verification Email click on resend link."
+            );
+        });
+
+        // res.status(201).json(result);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  } else {
+    res.status(400).json({ msg: "your password not complex" });
+  }
+};
+//end register function
+
+//start login function
+const login = (req, res) => {
+  const { name, password } = req.body;
+  const savedname = name.toLowerCase();
+
+  userModel
+    .findOne({$or: [{ email: savedname }, { username: savedname }] })
+    .then(async (result) => {
+      if (result) {
+        if (result.isDel === false) {
           if (result.isActive === false) {
             res.status(401).json({
               msg: "Your Email has not been verified. Please click on resend",
@@ -107,52 +107,55 @@ const register = async (req, res) => {
                 role: result.role,
                 id: result._id,
               };
-              const options = { expiresIn: "300m" };
+              const options = { expiresIn: "600m" };
               const token = await jwt.sign(payload, secret, options);
               res.status(200).json({ result, token });
             } else {
               res.status(400).json("invalid email or password");
             }
           }
-        } else {
-          res.status(404).json("user does not exit");
+        }else{
+          res.status(404).json("user is spamed");
         }
+      } else {
+        res.status(404).json("user does not exit");
+      }
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+//end login function
+
+//start confirm email function
+const confirmEmail = (req, res) => {
+  const { email } = req.params;
+
+  try {
+    userModel
+      .findOneAndUpdate(
+        { email: email },
+        { isActive: true },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        console.log("result", result);
+        res.status(200).send("Your account has been successfully verified");
       })
       .catch((err) => {
-        res.status(400).json(err);
+        console.log("err", err);
+        res.status(404).json("user not found");
       });
-  };
-  //end login function
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+//end confirm email function
 
-  //start confirm email function
-  const confirmEmail = (req, res) => {
-    const { email } = req.params;
-  
-    try {
-      userModel
-        .findOneAndUpdate(
-          { email: email },
-          { isActive: true },
-          {
-            new: true,
-          }
-        )
-        .then((result) => {
-          console.log("result", result);
-          res.status(200).send("Your account has been successfully verified");
-        })
-        .catch((err) => {
-          console.log("err", err);
-          res.status(404).json("user not found");
-        });
-    } catch (err) {
-      res.status(400).send(err);
-    }
-  };
-  //end confirm email function
-
-  //start forgitpass function
-  const forgitpass = (req, res) => {
+//start forgitpass function
+const forgitpass = (req, res) => {
   const { email } = req.body;
 
   userModel
@@ -197,87 +200,158 @@ const register = async (req, res) => {
 //end forgitpass function
 
 //start changpass function
-const changepass=async (req,res)=>{
-  const {email,rand,password}=req.body;
+const changepass = async (req, res) => {
+  const { email, rand, password } = req.body;
   const savedPassword = await bcrypt.hash(password, SALT);
-  userModel.findOneAndUpdate({$and:[{email},{rand}]},{password:savedPassword},{new:true})
-  .then((result)=>{
-    res.status(200).json(result)
-  })
-  .catch((err)=>{
-    res.status(400).json(err)
-  });
-};
-//end changepass function
-
-  //start getAllUsers function
-  const getAllUser=(req, res) => {
-    userModel
-      .find({})
-      .sort({ point :-1})
-      .then((result) => {
-          if(result){
-        res.status(200).json(result);
-          }else{
-            res.status(404).json("not found any user"); 
-          }
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  };
-  //end  getAllUsers function
-
-  //start getUserById function
-  const getUserById=(req,res)=>{
-      const {id}=req.params;
-    userModel
-    .findOne({_id:id})
-    .populate("favLan")
-    .populate("education")
-    .populate("training")
-    .exec()
+  userModel
+    .findOneAndUpdate(
+      { $and: [{ email }, { rand }] },
+      { password: savedPassword },
+      { new: true }
+    )
     .then((result) => {
-        if(result){
-         
       res.status(200).json(result);
-        }else{
-          res.status(404).json("not found any user"); 
-        }
     })
     .catch((err) => {
-      console.log("err",err);
       res.status(400).json(err);
     });
 };
-  //end getUserById function
+//end changepass function
 
-  //start deleteUserbyId function
-  const deleteUserbyId = (req, res) => {
-    const { id } = req.params;
+//start getAllUsers function
+const getAllUser = (req, res) => {
+  userModel
+    .find({ $and: [{ isDel: false }, { isActive: true }] })
+    .sort({ point: -1 })
+    .then((result) => {
+      if (result) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).json("not found any user");
+      }
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+//end  getAllUsers function
+
+//start getUserById function
+const getUserById = (req, res) => {
+  const { id } = req.params;
+  userModel
+    .findOne({ $and: [{ _id: id }, { isDel: false }, { isActive: true }] })
+    // .populate("favLan")
+    // .populate("education")
+    // .populate("training")
+    // .exec()
+    .then((result) => {
+      if (result) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).json("not found any user");
+      }
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(400).json(err);
+    });
+};
+//end getUserById function
+
+//start deleteUserbyId function
+const deleteUserbyId = (req, res) => {
+  const { id } = req.params;
+  userModel
+    .findByIdAndUpdate({ _id: id }, { isDel: true })
+    .then(() => {
+      res.status(200).json({ message: "User has been deleted successfully" });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+//end deleteUserbyId function
+
+//start addInterest function
+const addInerest = (req, res) => {
+  const { interest } = req.body;
+  const userId = req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      { $push: { interest: [...interest] } },
+      {
+        new: true,
+      }
+    )
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+};
+//end addInterest function
+
+//start deleteinterest function
+const deleteinterest = (req, res) => {
+  const { interest } = req.params;
+  const userId = req.token.id;
+  userModel
+    .findOneAndUpdate(
+      { _id: userId },
+      { $pull: { interest } },
+      {
+        new: true,
+      }
+    )
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("user not found");
+    });
+};
+//end deleteinterest function
+
+//start website function
+// const website=(req,res)=>{
+//   const {website}=req.body;
+//   const userId=req.token.id;
+//   userModel
+//     .findOneAndUpdate(
+//       { _id: userId },
+//       {website} ,
+//       {
+//         new: true,
+//       }
+//     ).then((result) => {
+//       res.status(200).json(result);
+//     })
+//     .catch((err) => {
+//       console.log("err", err);
+//       res.status(404).json("user not found");
+//     });
+// }
+//end website function
+
+//start comunication function
+const comunication = (req, res) => {
+  const { github, website, stackflow, twitter, linkedin } = req.body;
+  const userId = req.token.id;
+  if (github) {
     userModel
-      .findByIdAndUpdate({_id:id}, { isDel: true })
-      .then(() => {
-        res.status(200).json({ message: "User has been deleted successfully" });
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  };
-  //end deleteUserbyId function
-  
-  //start addInterest function
-  const addInerest=(req,res)=>{
-      const {interest}=req.body;
-      const userId=req.token.id;
-      userModel
       .findOneAndUpdate(
         { _id: userId },
-        { $push: { interest:[...interest] } } ,
+        { github },
         {
           new: true,
         }
-      ).then((result) => {
+      )
+      .then((result) => {
         res.status(200).json(result);
       })
       .catch((err) => {
@@ -285,178 +359,307 @@ const changepass=async (req,res)=>{
         res.status(404).json("user not found");
       });
   }
-  //end addInterest function
-
-  //start deleteinterest function
-  const deleteinterest=(req,res)=>{
-    const {interest}=req.body;
-    const userId=req.token.id;
+  if (website) {
     userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      { $pull: { interest } } ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
-//end deleteinterest function
-
-//start website function
-const website=(req,res)=>{
-  const {website}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {website} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
-//end website function
-
-//start github function
-const github=(req,res)=>{
-  const {github}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {github} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
-//end github function
-
-//start stackflow function
-const stackflow=(req,res)=>{
-  const {stackflow}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {stackflow} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
-//end stackflow function
-//start twitter function
-const twitter=(req,res)=>{
-  const {twitter}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {twitter} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
-//end twitter function
-
-//start linkedin function
-const linkedin=(req,res)=>{
-  const {linkedin}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {linkedin} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
-//end linkedin function
+      .findOneAndUpdate(
+        { _id: userId },
+        { website },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (stackflow) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { stackflow },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (twitter) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { twitter },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (linkedin) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { linkedin },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+};
+//end comunication function
 
 //start editPesonalInfo function
-const editPesonalInfo=(req,res)=>{
-  const {birth,country,city,nationality,gender,workStatus}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {birth,country,city,nationality,gender,workStatus} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
+const editPesonalInfo = (req, res) => {
+  const { birth, country, city, nationality, gender, workStatus } = req.body;
+  const userId = req.token.id;
+  if (birth) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { birth },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (country) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { country },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (city) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { city },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (nationality) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { nationality },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (gender) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { gender },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (workStatus) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { workStatus },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+};
 //end editPesonalInfo function
 
 //start editAccountInfo function
-const editAccountInfo=(req,res)=>{
-  const {avatar,firstname,lastname,username,email,phone}=req.body;
-  const userId=req.token.id;
-  userModel
-    .findOneAndUpdate(
-      { _id: userId },
-      {avatar,firstname,lastname,username,email,phone} ,
-      {
-        new: true,
-      }
-    ).then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("err", err);
-      res.status(404).json("user not found");
-    });
-}
+const editAccountInfo = (req, res) => {
+  const { avatar, firstname, lastname, username, email, phone } = req.body;
+  const userId = req.token.id;
+  if (avatar) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { avatar },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (firstname) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { firstname },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (lastname) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { lastname },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (username) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { username },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (email) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { email },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (phone) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { phone },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+};
 //end editAccountInfo function
 
-  
-
-  
-
-
-  module.exports = { register,confirmEmail,login,getAllUser,getUserById,deleteUserbyId,addInerest,forgitpass,changepass,deleteinterest,website,github,stackflow,twitter,linkedin,editPesonalInfo,editAccountInfo };
+module.exports = {
+  register,
+  confirmEmail,
+  login,
+  getAllUser,
+  getUserById,
+  deleteUserbyId,
+  addInerest,
+  forgitpass,
+  changepass,
+  deleteinterest,
+  comunication,
+  editPesonalInfo,
+  editAccountInfo,
+};
