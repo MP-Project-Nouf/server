@@ -122,12 +122,116 @@ const getChallbylevel=(req,res)=>{
   //start editChall function
 const editChall=(req,res)=>{
     const {disc,title,point,level,input,output,active,_id}=req.body;
+    console.log("hello");
    if(disc)
    {
     challengeModel
     .findOneAndUpdate(
       { _id},
       {disc} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+   if(title)
+   {
+    challengeModel
+    .findOneAndUpdate(
+      { _id},
+      {title} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+   if(point)
+   {
+    challengeModel
+    .findOneAndUpdate(
+      { _id},
+      {point} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+   if(level)
+   {
+    challengeModel
+    .findOneAndUpdate(
+      { _id},
+      {level} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+   if(input)
+   {
+    challengeModel
+    .findOneAndUpdate(
+      { _id},
+      {input} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+   if(output)
+   {
+    challengeModel
+    .findOneAndUpdate(
+      { _id},
+      {output} ,
+      {
+        new: true,
+      }
+    ).then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.status(404).json("challenge not found");
+    });
+   }
+   if(!(active===undefined))
+   {
+    console.log("salam");
+    challengeModel
+    .findOneAndUpdate(
+      { _id},
+      {active} ,
       {
         new: true,
       }

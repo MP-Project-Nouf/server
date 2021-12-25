@@ -12,8 +12,16 @@ const nodemailer = require("nodemailer");
 
 //start register function
 const register = async (req, res) => {
-  const { firstname, lastname, email, username, phone, password, role } =
+  const { firstname, lastname, email, username, password, role } =
     req.body;
+    const savedEmail = email.toLowerCase();
+    const savedName = username.toLowerCase();
+  const found = await userModel.findOne({
+    $or: [{ email: savedName}, { username:  savedName }],
+  });
+  if (found) {
+    return res.status(204).json("اسم المستخدم او كلمة المرور موجود مسبقا");
+  }
   if (
     /\d/.test(password) &&
     /[A-Z]/.test(password) &&
@@ -21,8 +29,7 @@ const register = async (req, res) => {
     /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password) &&
     password.length > 6
   ) {
-    const savedEmail = email.toLowerCase();
-    const savedName = username.toLowerCase();
+   
     const savedPassword = await bcrypt.hash(password, SALT);
     rand = Math.floor(Math.random() * 2222 + 54);
 
@@ -34,7 +41,6 @@ const register = async (req, res) => {
       firstname,
       lastname,
       rand,
-      phone,
     });
     newUser
       .save()
@@ -81,44 +87,75 @@ const register = async (req, res) => {
         res.status(400).json(err);
       });
   } else {
-    res.status(400).json({ msg: "your password not complex" });
+    return res.status(203).json("كلمة المرور غير مناسبة" );
   }
 };
 //end register function
 
 //start login function
 const login = (req, res) => {
-  const { name, password } = req.body;
-  const savedname = name.toLowerCase();
+//   const { name, password } = req.body;
+//   const savedname = name.toLowerCase();
 
+//   userModel
+//     .findOne({$or: [{ email: savedname }, { username: savedname }] })
+//     .then(async (result) => {
+//       if (result) {
+//         if (result.isDel === false) {
+//           if (result.isActive === false) {
+//             return res.status(203).json("Your Email has not been verified");
+//           } else {
+//             const hashedPass = await bcrypt.compare(password, result.password);
+//             if (hashedPass) {
+//               const payload = {
+//                 role: result.role,
+//                 id: result._id,
+//               };
+//               const options = { expiresIn: "600m" };
+//               const token = await jwt.sign(payload, secret, options);
+//               res.status(200).json({ result, token });
+//             } else {
+//               res.status(206).json("invalid email or password");
+//             }
+//           }
+//         }else{
+//           return res.status(203).json("your account has been deleted");
+//         }
+//       } else {
+//         res.status(404).json("user does not exit");
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(400).json(err);
+//     });
+// };
+const { input, password } = req.body;
+  newInput = input.toLowerCase();
   userModel
-    .findOne({$or: [{ email: savedname }, { username: savedname }] })
+    .findOne({ $or: [{ email: newInput }, { username: newInput }] })
     .then(async (result) => {
       if (result) {
-        if (result.isDel === false) {
-          if (result.isActive === false) {
-            res.status(401).json({
-              msg: "Your Email has not been verified. Please click on resend",
-            });
-          } else {
-            const hashedPass = await bcrypt.compare(password, result.password);
-            if (hashedPass) {
-              const payload = {
-                role: result.role,
-                id: result._id,
-              };
-              const options = { expiresIn: "600m" };
-              const token = await jwt.sign(payload, secret, options);
-              res.status(200).json({ result, token });
-            } else {
-              res.status(400).json("invalid email or password");
-            }
+        if (result.isDel) {
+          return res.status(203).json("your account has been deleted");
+        }
+        //unhash password
+        const savePass = await bcrypt.compare(password, result.password); //compare return boolean
+        if (savePass) {
+          if (!result.isActive) {
+            return res.status(203).json("Your Email has not been verified");
           }
-        }else{
-          res.status(404).json("user is spamed");
+          const payload = {
+            role: result.role,
+            id: result._id,
+          };
+          const options = { expiresIn: "600m" };
+              const token = await jwt.sign(payload, secret, options);
+          res.status(200).json({ result, token });
+        } else {
+          res.status(206).json("invalid email or password");
         }
       } else {
-        res.status(404).json("user does not exit");
+        res.status(206).json("invalid email or password");
       }
     })
     .catch((err) => {
@@ -192,7 +229,7 @@ const forgitpass = (req, res) => {
 
     .catch((err) => {
       console.log("err", err);
-      res.status(400).send({
+      return res.status(400).send({
         msg: "We were unable to find a user with that email. Make sure your Email is correct!",
       });
     });
