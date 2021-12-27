@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const challenge = new mongoose.Schema({
   disc: { type: String, required: true },
   title: { type: String, required: true },
+  defValue:{type: String, required: true},
   point: { type: Number },
   level: { type: Number },
   input: { type: Array, required: true },

@@ -578,7 +578,7 @@ const editPesonalInfo = (req, res) => {
 
 //start editAccountInfo function
 const editAccountInfo = (req, res) => {
-  const { avatar, firstname, lastname, username, email, phone } = req.body;
+  const { avatar, firstname, lastname, username, email, phone,level,point } = req.body;
   const userId = req.token.id;
   if (avatar) {
     userModel
@@ -670,6 +670,40 @@ const editAccountInfo = (req, res) => {
       .findOneAndUpdate(
         { _id: userId },
         { phone },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (level) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { level },
+        {
+          new: true,
+        }
+      )
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        res.status(404).json("user not found");
+      });
+  }
+  if (point) {
+    userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        { point },
         {
           new: true,
         }

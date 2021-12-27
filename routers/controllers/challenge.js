@@ -2,20 +2,24 @@ const challengeModel = require("./../../db/models/challenge");
 
 //start addChall function
 const addChall=(req,res)=>{
-    const {disc,title,point,level,input,output,active}=req.body;
+    const {disc,title,input,output,defValue}=req.body;
     const userId=req.token.id;
-    const newChallengeModel = new challengeModel({
-        disc,
-        title,
-        point,
-        level,
-        input,
-        output,
-        active,
-        user:userId
-       
-      });
-      newChallengeModel
+    challengeModel
+    .find()
+      .then((resul)=>{
+        const level=resul.length+1
+        console.log("numLevel",level);
+        const newChallengeModel = new challengeModel({
+          disc,
+          title,
+          defValue,
+          input,
+          output,
+          user:userId,
+          level
+         
+        });
+        newChallengeModel
         .save()
         .then((result) => {
       res.status(200).json(result);
@@ -23,6 +27,12 @@ const addChall=(req,res)=>{
     .catch((err) => {
             res.status(400).json(err);
     });
+
+      }).catch((err) => {
+        res.status(400).json(err);
+    
+      
+})
 }
 //end addChall function
 
@@ -121,7 +131,7 @@ const getChallbylevel=(req,res)=>{
 
   //start editChall function
 const editChall=(req,res)=>{
-    const {disc,title,point,level,input,output,active,_id}=req.body;
+    const {disc,title,point,input,output,active,_id,defValue}=req.body;
     console.log("hello");
    if(disc)
    {
@@ -174,12 +184,12 @@ const editChall=(req,res)=>{
       res.status(404).json("challenge not found");
     });
    }
-   if(level)
+   if(defValue)
    {
     challengeModel
     .findOneAndUpdate(
       { _id},
-      {level} ,
+      {defValue} ,
       {
         new: true,
       }
