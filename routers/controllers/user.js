@@ -5,10 +5,10 @@ const SALT = Number(process.env.SALT);
 const jwt = require("jsonwebtoken");
 const secret = process.env.secretKey;
 const nodemailer = require("nodemailer");
-// const passport = require('passport');
+const passport = require('passport');
 
-// const { OAuth2Client } = require("google-auth-library");
-// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 //start register function
 const register = async (req, res) => {
@@ -45,13 +45,13 @@ const register = async (req, res) => {
     newUser
       .save()
       .then((result) => {
-        // console.log("HOST",HOST);
+        console.log("HOST",HOST);
         const transporter = nodemailer.createTransport({
           service: "Gmail",
           auth: { user: process.env.USER, pass: process.env.PASS },
         });
         const mailOptions = {
-          from: "nouf.ateeq@gmail.com",
+          from: "master.nouf@gmail.com",
           to: result.email,
           subject: "Account Verification Link",
           text:
