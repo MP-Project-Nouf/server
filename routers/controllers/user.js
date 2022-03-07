@@ -125,41 +125,7 @@ const register = async (req, res) => {
 
 //start login function
 const login = (req, res) => {
-  //   const { name, password } = req.body;
-  //   const savedname = name.toLowerCase();
-
-  //   userModel
-  //     .findOne({$or: [{ email: savedname }, { username: savedname }] })
-  //     .then(async (result) => {
-  //       if (result) {
-  //         if (result.isDel === false) {
-  //           if (result.isActive === false) {
-  //             return res.status(203).json("Your Email has not been verified");
-  //           } else {
-  //             const hashedPass = await bcrypt.compare(password, result.password);
-  //             if (hashedPass) {
-  //               const payload = {
-  //                 role: result.role,
-  //                 id: result._id,
-  //               };
-  //               const options = { expiresIn: "600m" };
-  //               const token = await jwt.sign(payload, secret, options);
-  //               res.status(200).json({ result, token });
-  //             } else {
-  //               res.status(206).json("invalid email or password");
-  //             }
-  //           }
-  //         }else{
-  //           return res.status(203).json("your account has been deleted");
-  //         }
-  //       } else {
-  //         res.status(404).json("user does not exit");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       res.status(400).json(err);
-  //     });
-  // };
+  
   const { input, password } = req.body;
   newInput = input.toLowerCase();
   userModel
