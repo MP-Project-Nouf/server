@@ -51,7 +51,7 @@ const register = async (req, res) => {
           auth: { user: process.env.USER, pass: process.env.PASS },
         });
         const mailOptions = {
-          from: "nouf.ateeq@gmail.com",
+          from: process.env.USER,
           to: result.email,
           subject: "Account Verification Link",
           text:
