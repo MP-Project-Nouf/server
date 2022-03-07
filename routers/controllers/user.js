@@ -4,20 +4,21 @@ require("dotenv").config();
 const SALT = Number(process.env.SALT);
 const jwt = require("jsonwebtoken");
 const secret = process.env.secretKey;
-const nodemailer = require("nodemailer");
-const passport = require('passport');
+// const nodemailer = require("nodemailer");
+const passport = require("passport");
+const sgMail = require("@sendgrid/mail");
 
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //start register function
 const register = async (req, res) => {
-  const { firstname, lastname, email, username, password, role } =
-    req.body;
-    const savedEmail = email.toLowerCase();
-    const savedName = username.toLowerCase();
+  const { firstname, lastname, email, username, password, role } = req.body;
+  const savedEmail = email.toLowerCase();
+  const savedName = username.toLowerCase();
   const found = await userModel.findOne({
-    $or: [{ email: savedName}, { username:  savedName }],
+    $or: [{ email: savedName }, { username: savedName }],
   });
   if (found) {
     return res.status(204).json("اسم المستخدم او كلمة المرور موجود مسبقا");
@@ -29,7 +30,6 @@ const register = async (req, res) => {
     /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password) &&
     password.length > 6
   ) {
-   
     const savedPassword = await bcrypt.hash(password, SALT);
     rand = Math.floor(Math.random() * 2222 + 54);
 
@@ -45,41 +45,72 @@ const register = async (req, res) => {
     newUser
       .save()
       .then((result) => {
-        console.log("HOST",HOST);
-        const transporter = nodemailer.createTransport({
-          service: "Gmail",
-          auth: { user: process.env.USER, pass: process.env.PASS },
-        });
-        const mailOptions = {
-          from: "master.nouf@gmail.com",
-          to: result.email,
+        console.log("HOST", HOST);
+
+        const msg = {
+          to: result.email, // Change to your recipient
+          from: "process.env.USER", // Change to your verified sender
           subject: "Account Verification Link",
           text:
             "Hello " +
             result.username +
             ",\n\n" +
-            "Please verify your account by clicking the link: \nhttp://" +
-            req.headers.host +
-            "/confirmation/" +
-            result.email +
-            "/" +
-            rand +
-            "\n\nThank You!\n",
+            "Please verify your account by clicking the link: \n Thank You!\n",
+          html: "<a href=`http://{req.headers.host}/confirmation/{result.email}/rand`>click here to verify your account</a>",
         };
-        transporter.sendMail(mailOptions, function (err) {
-          if (err) {
-            res.status(500).send({
-              msg: "Technical Issue!, Please click on resend for verify your Email.",
-            });
-          }
-          res
+     
+        // const transporter = nodemailer.createTransport({
+        //   service: "Gmail",
+        //   auth: { user: process.env.USER, pass: process.env.PASS },
+        // });
+        // const mailOptions = {
+        //   from: "master.nouf@gmail.com",
+        //   to: result.email,
+        //   subject: "Account Verification Link",
+        //   text:
+        //     "Hello " +
+        //     result.username +
+        //     ",\n\n" +
+        //     "Please verify your account by clicking the link: \nhttp://" +
+        //     req.headers.host +
+        //     "/confirmation/" +
+        //     result.email +
+        //     "/" +
+        //     rand +
+        //     "\n\nThank You!\n",
+        // };
+        sgMail
+          .send(msg)
+          .then(() => {
+            console.log("Email sent");
+            res
             .status(200)
             .send(
               "A verification email has been sent to " +
                 result.email +
                 ". It will be expire after one day. If you not get verification Email click on resend link."
             );
-        });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send({
+                    msg: "Technical Issue!, Please click on resend for verify your Email."
+                  });
+          });
+        // transporter.sendMail(mailOptions, function (err) {
+        //   if (err) {
+        //     res.status(500).send({
+        //       msg: "Technical Issue!, Please click on resend for verify your Email.",
+        //     });
+        //   }
+        //   res
+        //     .status(200)
+        //     .send(
+        //       "A verification email has been sent to " +
+        //         result.email +
+        //         ". It will be expire after one day. If you not get verification Email click on resend link."
+        //     );
+        // });
 
         // res.status(201).json(result);
       })
@@ -87,49 +118,49 @@ const register = async (req, res) => {
         res.status(400).json(err);
       });
   } else {
-    return res.status(203).json("كلمة المرور غير مناسبة" );
+    return res.status(203).json("كلمة المرور غير مناسبة");
   }
 };
 //end register function
 
 //start login function
 const login = (req, res) => {
-//   const { name, password } = req.body;
-//   const savedname = name.toLowerCase();
+  //   const { name, password } = req.body;
+  //   const savedname = name.toLowerCase();
 
-//   userModel
-//     .findOne({$or: [{ email: savedname }, { username: savedname }] })
-//     .then(async (result) => {
-//       if (result) {
-//         if (result.isDel === false) {
-//           if (result.isActive === false) {
-//             return res.status(203).json("Your Email has not been verified");
-//           } else {
-//             const hashedPass = await bcrypt.compare(password, result.password);
-//             if (hashedPass) {
-//               const payload = {
-//                 role: result.role,
-//                 id: result._id,
-//               };
-//               const options = { expiresIn: "600m" };
-//               const token = await jwt.sign(payload, secret, options);
-//               res.status(200).json({ result, token });
-//             } else {
-//               res.status(206).json("invalid email or password");
-//             }
-//           }
-//         }else{
-//           return res.status(203).json("your account has been deleted");
-//         }
-//       } else {
-//         res.status(404).json("user does not exit");
-//       }
-//     })
-//     .catch((err) => {
-//       res.status(400).json(err);
-//     });
-// };
-const { input, password } = req.body;
+  //   userModel
+  //     .findOne({$or: [{ email: savedname }, { username: savedname }] })
+  //     .then(async (result) => {
+  //       if (result) {
+  //         if (result.isDel === false) {
+  //           if (result.isActive === false) {
+  //             return res.status(203).json("Your Email has not been verified");
+  //           } else {
+  //             const hashedPass = await bcrypt.compare(password, result.password);
+  //             if (hashedPass) {
+  //               const payload = {
+  //                 role: result.role,
+  //                 id: result._id,
+  //               };
+  //               const options = { expiresIn: "600m" };
+  //               const token = await jwt.sign(payload, secret, options);
+  //               res.status(200).json({ result, token });
+  //             } else {
+  //               res.status(206).json("invalid email or password");
+  //             }
+  //           }
+  //         }else{
+  //           return res.status(203).json("your account has been deleted");
+  //         }
+  //       } else {
+  //         res.status(404).json("user does not exit");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).json(err);
+  //     });
+  // };
+  const { input, password } = req.body;
   newInput = input.toLowerCase();
   userModel
     .findOne({ $or: [{ email: newInput }, { username: newInput }] })
@@ -149,7 +180,7 @@ const { input, password } = req.body;
             id: result._id,
           };
           const options = { expiresIn: "600m" };
-              const token = await jwt.sign(payload, secret, options);
+          const token = await jwt.sign(payload, secret, options);
           res.status(200).json({ result, token });
         } else {
           res.status(206).json("invalid email or password");
@@ -198,33 +229,63 @@ const forgitpass = (req, res) => {
   userModel
     .findOne({ email: email })
     .then((result) => {
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: process.env.USER,
-          pass: process.env.PASS,
-        },
-      });
-      const mailOptions = {
-        from: "nouf.ateeq@gmail.com",
-        to: result.email,
+      const msg = {
+        to: result.email, // Change to your recipient
+        from: "process.env.USER", // Change to your verified sender
         subject: "Account Verification Link",
         text:
           "Hello " +
-          result.name +
+          result.username +
           ",\n\n" +
-          "Please copy this code to change your password: \n" +
-          result.rand +
-          "\n\nThank You!\n",
+          "Please verify your account by clicking the link: \n Thank You!\n",
+        html: "<a href=`http://{req.headers.host}/confirmation/{result.email}/rand`>click here to verify your account</a>",
       };
-      transporter.sendMail(mailOptions, function (err) {
-        if (err) {
-          return res.status(500).send({
-            msg: "Technical Issue!, Please click on resend for change.",
+      // const transporter = nodemailer.createTransport({
+      //   service: "Gmail",
+      //   auth: {
+      //     user: process.env.USER,
+      //     pass: process.env.PASS,
+      //   },
+      // });
+      // const mailOptions = {
+      //   from: "nouf.ateeq@gmail.com",
+      //   to: result.email,
+      //   subject: "Account Verification Link",
+      //   text:
+      //     "Hello " +
+      //     result.name +
+      //     ",\n\n" +
+      //     "Please copy this code to change your password: \n" +
+      //     result.rand +
+      //     "\n\nThank You!\n",
+      // };
+
+      sgMail
+          .send(msg)
+          .then(() => {
+            console.log("Email sent");
+            res
+            .status(200)
+            .send(
+              "A verification email has been sent to " +
+                result.email +
+                ". It will be expire after one day. If you not get verification Email click on resend link."
+            );
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send({
+                    msg: "Technical Issue!, Please click on resend for verify your Email."
+                  });
           });
-        }
-        return res.status(200).send("code has been sent to " + result.email);
-      });
+      // transporter.sendMail(mailOptions, function (err) {
+      //   if (err) {
+      //     return res.status(500).send({
+      //       msg: "Technical Issue!, Please click on resend for change.",
+      //     });
+      //   }
+      //   return res.status(200).send("code has been sent to " + result.email);
+      // });
     })
 
     .catch((err) => {
@@ -578,7 +639,8 @@ const editPesonalInfo = (req, res) => {
 
 //start editAccountInfo function
 const editAccountInfo = (req, res) => {
-  const { avatar, firstname, lastname, username, email, phone,level,point } = req.body;
+  const { avatar, firstname, lastname, username, email, phone, level, point } =
+    req.body;
   const userId = req.token.id;
   if (avatar) {
     userModel
@@ -719,18 +781,24 @@ const editAccountInfo = (req, res) => {
 };
 //end editAccountInfo function
 
-
 //start search function
 const searchUser = (req, res) => {
-  const {name}=req.params;
-  userModel
-    .find({$or:[{ username:{$regex: new RegExp(name)}},{ password:{$regex: new RegExp(name)}}]},
+  const { name } = req.params;
+  userModel.find(
     {
-      _id:0,
-      _v:0
-    },function (err,data){
+      $or: [
+        { username: { $regex: new RegExp(name) } },
+        { password: { $regex: new RegExp(name) } },
+      ],
+    },
+    {
+      _id: 0,
+      _v: 0,
+    },
+    function (err, data) {
       res.json(data);
-    })
+    }
+  );
 };
 // end serach function
 
@@ -748,5 +816,5 @@ module.exports = {
   comunication,
   editPesonalInfo,
   editAccountInfo,
-  searchUser
+  searchUser,
 };
