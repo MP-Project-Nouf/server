@@ -133,7 +133,7 @@ const getChallbylevel=(req,res)=>{
 const editChall=(req,res)=>{
     const {disc,title,point,input,output,active,_id,defValue}=req.body;
     console.log("hello");
-   if(disc)
+   if(disc.length)
    {
     challengeModel
     .findOneAndUpdate(
@@ -150,7 +150,7 @@ const editChall=(req,res)=>{
       res.status(404).json("challenge not found");
     });
    }
-   if(title)
+   if(title.length)
    {
     challengeModel
     .findOneAndUpdate(
@@ -184,7 +184,7 @@ const editChall=(req,res)=>{
       res.status(404).json("challenge not found");
     });
    }
-   if(defValue)
+   if(defValue.length)
    {
     challengeModel
     .findOneAndUpdate(
@@ -201,7 +201,7 @@ const editChall=(req,res)=>{
       res.status(404).json("challenge not found");
     });
    }
-   if(input)
+   if(input.length)
    {
     challengeModel
     .findOneAndUpdate(
@@ -218,7 +218,7 @@ const editChall=(req,res)=>{
       res.status(404).json("challenge not found");
     });
    }
-   if(output)
+   if(output.length)
    {
     challengeModel
     .findOneAndUpdate(
@@ -235,7 +235,7 @@ const editChall=(req,res)=>{
       res.status(404).json("challenge not found");
     });
    }
-   if(!(active===undefined))
+   if(!(active===null))
    {
     console.log("salam");
     challengeModel
@@ -246,6 +246,7 @@ const editChall=(req,res)=>{
         new: true,
       }
     ).then((result) => {
+      console.log("result",result)
       res.status(200).json(result);
     })
     .catch((err) => {
