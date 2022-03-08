@@ -4,17 +4,17 @@ require("dotenv").config();
 const SALT = Number(process.env.SALT);
 const jwt = require("jsonwebtoken");
 const secret = process.env.secretKey;
-// const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 const passport = require("passport");
-const sgMail = require("@sendgrid/mail");
+//const sgMail = require("@sendgrid/mail");
 
 // const { OAuth2Client } = require("google-auth-library");
 // const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+//sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //start register function
 const register = async (req, res) => {
-  console.log("hello")
+  try {
   const { firstname, lastname, email, username, password, role } = req.body;
   const savedEmail = email.toLowerCase();
   const savedName = username.toLowerCase();
@@ -22,7 +22,9 @@ const register = async (req, res) => {
     $or: [{ email: savedName }, { username: savedName }],
   });
   if (found) {
-    return res.status(204).json("اسم المستخدم او كلمة المرور موجود مسبقا");
+    return res.status(400).json({
+      message: "اسم المستخدم او كلمة المرور موجود مسبقا",
+    });
   }
   if (
     /\d/.test(password) &&
@@ -43,90 +45,54 @@ const register = async (req, res) => {
       lastname,
       rand,
     });
-    newUser
-      .save()
-      .then((result) => {
-        console.log("HOST", HOST);
 
-        const msg = {
-          to: result.email, // Change to your recipient
-          from: "process.env.USER", // Change to your verified sender
-          subject: "Account Verification Link",
-          text:
-            "Hello " +
-            result.username +
-            ",\n\n" +
-            "Please verify your account by clicking the link: \n Thank You!\n",
-          html: "<a href=`http://{req.headers.host}/confirmation/{result.email}/rand`>click here to verify your account</a>",
-        };
-     
-        // const transporter = nodemailer.createTransport({
-        //   service: "Gmail",
-        //   auth: { user: process.env.USER, pass: process.env.PASS },
-        // });
-        // const mailOptions = {
-        //   from: "master.nouf@gmail.com",
-        //   to: result.email,
-        //   subject: "Account Verification Link",
-        //   text:
-        //     "Hello " +
-        //     result.username +
-        //     ",\n\n" +
-        //     "Please verify your account by clicking the link: \nhttp://" +
-        //     req.headers.host +
-        //     "/confirmation/" +
-        //     result.email +
-        //     "/" +
-        //     rand +
-        //     "\n\nThank You!\n",
-        // };
-        sgMail
-          .send(msg)
-          .then(() => {
-            console.log("Email sent");
-            res
-            .status(200)
-            .send(
-              "A verification email has been sent to " +
-                result.email +
-                ". It will be expire after one day. If you not get verification Email click on resend link."
-            );
-          })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send({
-                    msg: "Technical Issue!, Please click on resend for verify your Email."
-                  });
-          });
-        // transporter.sendMail(mailOptions, function (err) {
-        //   if (err) {
-        //     res.status(500).send({
-        //       msg: "Technical Issue!, Please click on resend for verify your Email.",
-        //     });
-        //   }
-        //   res
-        //     .status(200)
-        //     .send(
-        //       "A verification email has been sent to " +
-        //         result.email +
-        //         ". It will be expire after one day. If you not get verification Email click on resend link."
-        //     );
-        // });
+    const result = await newUser.save();
 
-        // res.status(201).json(result);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: { user: process.env.USER, pass: process.env.PASS },
+    });
+    const mailOptions = {
+      from: "master.nouf@gmail.com",
+      to: result.email,
+      subject: "Account Verification Link",
+      text:
+        "Hello " +
+        result.username +
+        ",\n\n" +
+        "Please verify your account by clicking the link: \nhttp://" +
+        req.headers.host +
+        "/confirmation/" +
+        result.email +
+        "/" +
+        rand +
+        "\n\nThank You!\n",
+    };
+    const mailResult = await transporter.sendMail(mailOptions);
+  
+    res.status(200).json({
+      message:
+        "A verification email has been sent to " +
+        result.email +
+        ". It will be expire after one day. If you not get verification Email click on resend link.",
+    });
+ 
   } else {
-    return res.status(203).json("كلمة المرور غير مناسبة");
+    res.status(400).json({
+      message:"Bad password "
+    });
   }
-};
+
+  } catch(e) {
+    console.log(e)
+    res.status(500).json({
+      message:"Server Error "
+    });
+}};
 //end register function
 
 //start login function
 const login = (req, res) => {
-  
   const { input, password } = req.body;
   newInput = input.toLowerCase();
   userModel
@@ -228,23 +194,23 @@ const forgitpass = (req, res) => {
       // };
 
       sgMail
-          .send(msg)
-          .then(() => {
-            console.log("Email sent");
-            res
+        .send(msg)
+        .then(() => {
+          console.log("Email sent");
+          res
             .status(200)
             .send(
               "A verification email has been sent to " +
                 result.email +
                 ". It will be expire after one day. If you not get verification Email click on resend link."
             );
-          })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send({
-                    msg: "Technical Issue!, Please click on resend for verify your Email."
-                  });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send({
+            msg: "Technical Issue!, Please click on resend for verify your Email.",
           });
+        });
       // transporter.sendMail(mailOptions, function (err) {
       //   if (err) {
       //     return res.status(500).send({
@@ -785,4 +751,3 @@ module.exports = {
   editAccountInfo,
   searchUser,
 };
-
