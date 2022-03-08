@@ -8,12 +8,13 @@ const secret = process.env.secretKey;
 const passport = require("passport");
 const sgMail = require("@sendgrid/mail");
 
-const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// const { OAuth2Client } = require("google-auth-library");
+// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //start register function
 const register = async (req, res) => {
+  console.log("hello")
   const { firstname, lastname, email, username, password, role } = req.body;
   const savedEmail = email.toLowerCase();
   const savedName = username.toLowerCase();
