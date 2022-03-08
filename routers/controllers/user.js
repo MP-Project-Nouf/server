@@ -162,63 +162,35 @@ const forgitpass = (req, res) => {
   userModel
     .findOne({ email: email })
     .then((result) => {
-      const msg = {
-        to: result.email, // Change to your recipient
-        from: "process.env.USER", // Change to your verified sender
+      
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.USER,
+          pass: process.env.PASS,
+        },
+      });
+      const mailOptions = {
+        from: "nouf.ateeq@gmail.com",
+        to: result.email,
         subject: "Account Verification Link",
         text:
           "Hello " +
-          result.username +
+          result.name +
           ",\n\n" +
-          "Please verify your account by clicking the link: \n Thank You!\n",
-        html: "<a href=`http://{req.headers.host}/confirmation/{result.email}/rand`>click here to verify your account</a>",
+          "Please copy this code to change your password: \n" +
+          result.rand +
+          "\n\nThank You!\n",
       };
-      // const transporter = nodemailer.createTransport({
-      //   service: "Gmail",
-      //   auth: {
-      //     user: process.env.USER,
-      //     pass: process.env.PASS,
-      //   },
-      // });
-      // const mailOptions = {
-      //   from: "nouf.ateeq@gmail.com",
-      //   to: result.email,
-      //   subject: "Account Verification Link",
-      //   text:
-      //     "Hello " +
-      //     result.name +
-      //     ",\n\n" +
-      //     "Please copy this code to change your password: \n" +
-      //     result.rand +
-      //     "\n\nThank You!\n",
-      // };
 
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log("Email sent");
-          res
-            .status(200)
-            .send(
-              "A verification email has been sent to " +
-                result.email +
-                ". It will be expire after one day. If you not get verification Email click on resend link."
-            );
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send({
-            msg: "Technical Issue!, Please click on resend for verify your Email.",
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          return res.status(500).send({
+            msg: "Technical Issue!, Please click on resend for change.",
           });
-        });
-      // transporter.sendMail(mailOptions, function (err) {
-      //   if (err) {
-      //     return res.status(500).send({
-      //       msg: "Technical Issue!, Please click on resend for change.",
-      //     });
-      //   }
-      //   return res.status(200).send("code has been sent to " + result.email);
-      // });
+        }
+        return res.status(200).send("code has been sent to " + result.email);
+      });
     })
 
     .catch((err) => {
@@ -272,10 +244,7 @@ const getUserById = (req, res) => {
   const { id } = req.params;
   userModel
     .findOne({ $and: [{ _id: id }, { isDel: false }, { isActive: true }] })
-    // .populate("favLan")
-    // .populate("education")
-    // .populate("training")
-    // .exec()
+  
     .then((result) => {
       if (result) {
         res.status(200).json(result);
