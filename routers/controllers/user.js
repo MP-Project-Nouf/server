@@ -317,26 +317,7 @@ const deleteinterest = (req, res) => {
 };
 //end deleteinterest function
 
-//start website function
-// const website=(req,res)=>{
-//   const {website}=req.body;
-//   const userId=req.token.id;
-//   userModel
-//     .findOneAndUpdate(
-//       { _id: userId },
-//       {website} ,
-//       {
-//         new: true,
-//       }
-//     ).then((result) => {
-//       res.status(200).json(result);
-//     })
-//     .catch((err) => {
-//       console.log("err", err);
-//       res.status(404).json("user not found");
-//     });
-// }
-//end website function
+
 
 //start comunication function
 const comunication = (req, res) => {
@@ -694,7 +675,6 @@ const searchUser = (req, res) => {
       ],
     },
     {
-      _id: 0,
       _v: 0,
     },
     function (err, data) {
